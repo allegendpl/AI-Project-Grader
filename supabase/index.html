@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GradeFlow - AI Project Grader (AP CSP Version)</title>
+  <link rel="stylesheet" href="public/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <h1>GradeFlow</h1>
+      <p class="subtitle">AI-Powered Project Grader</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="upload"> Upload</button>
+      <button class="tab" data-tab="rubric"> Rubric</button>
+      <button class="tab" data-tab="grading"> Analyze</button>
+      <button class="tab" data-tab="report"> Report</button>
+      <button class="tab" data-tab="chat"> AI Helper</button>
+    </nav>
+
+    <!-- Upload Section -->
+    <section id="upload" class="section active">
+      <h2>Upload Your Project</h2>
+
+      <div class="input-group">
+        <label for="projectName">Project Name:</label>
+        <input type="text" id="projectName" placeholder="Enter project name...">
+      </div>
+
+      <div class="upload-box" id="projectUpload">
+        <h3> Project Files</h3>
+        <p>Drag and drop or click to upload</p>
+        <input type="file" id="projectFile" accept=".txt,.doc,.docx,.pdf">
+        <div id="projectFileList" class="file-list"></div>
+      </div>
+
+      <div class="upload-box">
+        <h3> Rubric (Required)</h3>
+        <p>Paste your rubric criteria below:</p>
+        <textarea id="rubricInput" placeholder="Example:
+Content & Ideas (25 points): Demonstrates understanding...
+Organization (20 points): Well-structured...
+Evidence (20 points): Uses specific examples..."></textarea>
+      </div>
+
+      <div class="status-boxes">
+        <div class="status-box" id="projectStatus">
+          <span class="status-icon"></span>
+          <span>Project Required</span>
+        </div>
+        <div class="status-box" id="rubricStatus">
+          <span class="status-icon"></span>
+          <span>Rubric Required</span>
+        </div>
+      </div>
+
+      <button class="btn primary" id="startBtn" disabled>Start Grading →</button>
+    </section>
+
+    <!-- Rubric Section -->
+    <section id="rubric" class="section">
+      <h2>Rubric Criteria</h2>
+      <p class="info-text">Review your grading criteria below:</p>
+      <div id="rubricList" class="rubric-list"></div>
+      <button class="btn primary" id="toGradingBtn">Continue to Grading →</button>
+    </section>
+
+    <!-- Grading Section -->
+    <section id="grading" class="section">
+      <h2>Analyze Your Project</h2>
+      <p class="info-text">Choose your grading style:</p>
+
+      <div class="teacher-modes">
+        <button class="mode-btn" data-mode="elementary">
+          <span class="mode-emoji"></span>
+          <span class="mode-name">Elementary</span>
+          <span class="mode-desc">Encouraging feedback</span>
+        </button>
+        <button class="mode-btn" data-mode="middle">
+          <span class="mode-emoji"></span>
+          <span class="mode-name">Middle School</span>
+          <span class="mode-desc">Balanced grading</span>
+        </button>
+        <button class="mode-btn active" data-mode="high">
+          <span class="mode-emoji"></span>
+          <span class="mode-name">High School</span>
+          <span class="mode-desc">Strict grading</span>
+        </button>
+      </div>
+
+      <div class="input-group">
+        <label for="teacherFeedback">Teacher Comments (Optional):</label>
+        <textarea id="teacherFeedback" placeholder="Add any specific feedback from your teacher..."></textarea>
+      </div>
+
+      <button class="btn primary" id="analyzeBtn"> Analyze Project</button>
+      <div id="loadingIndicator" class="loading hidden">
+        <div class="spinner"></div>
+        <span>Analyzing your project...</span>
+      </div>
+    </section>
+
+    <!-- Report Section -->
+    <section id="report" class="section">
+      <h2>Your Results</h2>
+
+      <div class="score-circle" id="scoreCircle">
+        <div class="score-value">
+          <span id="scorePercent">0%</span>
+          <span id="scoreGrade">F</span>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-value" id="statScore">0/0</div>
+          <div class="stat-label">Score</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="statConfidence">0%</div>
+          <div class="stat-label">Confidence</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="statReadiness">0%</div>
+          <div class="stat-label">Readiness</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="statRisk">LOW</div>
+          <div class="stat-label">Risk Level</div>
+        </div>
+      </div>
+
+      <div class="collapsible" id="scoresCollapsible">
+        <button class="collapsible-header">
+          <span> Category Scores</span>
+          <span class="arrow">▼</span>
+        </button>
+        <div class="collapsible-content" id="categoryScores"></div>
+      </div>
+
+      <div class="collapsible" id="improvementsCollapsible">
+        <button class="collapsible-header">
+          <span> Improvement Suggestions</span>
+          <span class="arrow">▼</span>
+        </button>
+        <div class="collapsible-content" id="improvementsList"></div>
+      </div>
+
+      <button class="btn secondary" id="newRevisionBtn"> Submit Revision</button>
+    </section>
+
+    <!-- AI Chat Section -->
+    <section id="chat" class="section">
+      <h2>💬 AI Helper</h2>
+      <p class="info-text">Ask questions about your project and get help!</p>
+
+      <div class="chat-messages" id="chatMessages">
+        <div class="message bot">
+          <div class="message-content">
+            Hi! I'm your AI helper. I can answer questions about your project,
+            explain your scores, and help you improve. What would you like to know?
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-questions">
+        <button class="quick-btn" data-question="What is my lowest scoring area?">What's my lowest area?</button>
+        <button class="quick-btn" data-question="How can I improve?">How can I improve?</button>
+        <button class="quick-btn" data-question="Explain my scores">Explain my scores</button>
+      </div>
+
+      <div class="chat-input-container">
+        <input type="text" id="chatInput" placeholder="Type your question...">
+        <button class="btn primary" id="sendBtn">Send</button>
+      </div>
+      <p class="note" id="chatNote">Upload a project first to get contextual help!</p>
+    </section>
+  </div>
+
+  <script src="public/app.js"></script>
+</body>
+</html>
